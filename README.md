@@ -22,9 +22,14 @@ Usage
 ------
 * load the extension: a new PayloadTab should appear
 * at the PayloadTab, choose the payload folder
- * the extensions reads all files recursively
- * it also lists all of them if you need to sync the file contents with the file name in the Intruder request (use Pitchfork)
-* disable the "URL-encode these characters" option, at Intruder -> Payloads -> Payload Encoding
+ * the extensions reads all files recursively and lists them
+* in the payloads tab of the Intruder tool:
+  * select Extension-generated at Payload Sets -> Payload Type
+  * select File as Payload or Filename as Payload at Payload Options
+  * disable the "URL-encode these characters" option, at Payloads -> Payload Encoding (specially for multipart POST requests)
+  
+If you just need to use the file contents as payload, select File as Payload. 
+If you need both the content and filename then choose Pitchfork as the Attack type and use File as Payload for one Payload set and Filename as Payload for the other.
 
 
 TODO

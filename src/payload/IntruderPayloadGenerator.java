@@ -1,6 +1,7 @@
 package payload;
 
 import burp.BurpExtender;
+import burp.IBurpExtenderCallbacks;
 import burp.IIntruderPayloadGenerator;
 import java.io.File;
 import java.io.IOException;
@@ -17,15 +18,20 @@ public class IntruderPayloadGenerator implements IIntruderPayloadGenerator {
 
     int payloadIndex;
     ArrayList<String> files;
+    IBurpExtenderCallbacks callbacks = BurpExtender.getBurpCallbacks();
+    
+    // if true returns the filenames instead of the payload
+    boolean useFilename;
 
-    public IntruderPayloadGenerator(File folder) {
+    public IntruderPayloadGenerator(File folder, boolean useFilename) {
         if (folder == null) {
-            BurpExtender.getBurpCallbacks().issueAlert("Please choose the payload folder first");
+            callbacks.issueAlert("Please choose the payload folder first");
             files = new ArrayList<>();
         }
         else {
             files = FileUtils.listFilesForFolder(folder.getAbsolutePath());
         }
+        this.useFilename = useFilename;
     }
 
     @Override
@@ -40,10 +46,15 @@ public class IntruderPayloadGenerator implements IIntruderPayloadGenerator {
         
         byte[] payload = new byte[0];
         try {
-            payload = Files.readAllBytes(Paths.get(file));
+            if (useFilename) {
+                payload = callbacks.getHelpers().stringToBytes(Paths.get(file).getFileName().toString());
+            }
+            else {
+                payload = Files.readAllBytes(Paths.get(file));
+            }
         } catch (IOException ex) {
-            PrintWriter stderr = new PrintWriter(BurpExtender.getBurpCallbacks().getStderr(), true);
-            //stderr
+            PrintWriter stderr = new PrintWriter(callbacks.getStderr(), true);
+            stderr.println("Could not read \"" + file + "\" - " + ex.getLocalizedMessage());
         }
         
         return payload;

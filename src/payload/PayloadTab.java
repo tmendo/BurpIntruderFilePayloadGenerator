@@ -25,9 +25,6 @@ public class PayloadTab extends javax.swing.JPanel implements ActionListener, IT
     
     public File folder;
 
-    /**
-     * Creates new form OwnDBTab2
-     */
     public PayloadTab() {
         this.callbacks = BurpExtender.getBurpCallbacks();
         initComponents();
